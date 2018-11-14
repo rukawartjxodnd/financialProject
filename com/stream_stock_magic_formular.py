@@ -9,11 +9,11 @@ resultFile.write("소속"+","+"종목코드"+","+"종목명"+","+"현재가"+ ",
 # 전체 data 취합 및 필터링
 totalDataList = []
 # 코스피(1, 31+1)
-for pageNum in range(15,17+1):
+for pageNum in range(1, 31+1):
     financeInfoList = financeInfo.getPrices("0", str(pageNum))
     totalDataList = totalDataList + filteringInfo.filteringData("KOSPI", financeInfoList)
 # 코스닥(1, 26+1)
-for pageNum in range(15,17+1):
+for pageNum in range(1, 26+1):
     financeInfoList = financeInfo.getPrices("1", str(pageNum))
     totalDataList = totalDataList + filteringInfo.filteringData("KOSDAQ", financeInfoList)
 
