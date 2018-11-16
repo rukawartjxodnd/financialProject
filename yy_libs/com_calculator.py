@@ -2,7 +2,7 @@
 
 
 # 합
-def getAve(nums):
+def getSum(nums):
     sumVal = 0
     for element in nums:
         sumVal = sumVal + element
