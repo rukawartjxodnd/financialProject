@@ -15,8 +15,7 @@ def extractIndustryFactor(compCode):
             valuesInTds.append(td.text)
         valuesInTrs.append(valuesInTds)
 
-    return {"totalValue": valuesInTrs[0], "revanue": valuesInTrs[1], "profit": valuesInTrs[2],
+    return {"totalValue": valuesInTrs[0], "revenue": valuesInTrs[1], "profit": valuesInTrs[2],
             "eps": valuesInTrs[3], "per": valuesInTrs[4], "evEbitda": valuesInTrs[5],
             "roe": valuesInTrs[6], "divYeild": valuesInTrs[7], "beta": valuesInTrs[8], }
 
-print(extractIndustryFactor("005930"))
