@@ -19,7 +19,7 @@ resultFile.write("종목코드"+","+"종목명"+","+"PER"+ "," +"3년 평균 PER
                  "20% < 5년간 순이익 증가율 < 50%"+","+"영업이익률 > 10%"+","+"이자보상배율(배) > 2"+","+"조건충족 갯수"+"\n")
 
 # 종목별 검증 후 파일 쓰기
-for companyCode in codeList[:20]:
+for companyCode in codeList[:30]:
     try:
         # 뒤의 숫자는 만족하는 기준 갯수를 의미 함.
         resultDictionary = pl.verifyPL(companyCode['code'],3)
@@ -37,6 +37,6 @@ for companyCode in codeList[:20]:
                              resultDictionary["Yn4"]+","+resultDictionary["Yn5"]+","+resultDictionary["Yn6"]+","+
                              str(resultDictionary["meetNum"]) + "\n")
     except :
-        print("error: "+companyCode['code'])
+        print("error: "+companyCode['code_name'])
 
 resultFile.close()

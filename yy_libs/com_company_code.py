@@ -20,6 +20,6 @@ def getCompanyCodes(kind = ''):
         code_name = code+" "+name
         returnValue = {"code": code, "code_name": code_name, "sosok": sosok}
 
-        if kind in sosok:
+        if kind in sosok and name[-1] not in ['우', 'B']:
             resultCodes.append(returnValue)
     return resultCodes
