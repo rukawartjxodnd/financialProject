@@ -31,11 +31,18 @@ def getAvg(nums, option=0):
             devideNum = devideNum + 1
             sumVal = sumVal + num
 
-    avgVal = sumVal / devideNum
+    try:
+        avgVal = sumVal / devideNum
+    except:
+        avgVal = 0
+
     return avgVal
 
 
 # 복리 증가율
 def cmpIntstIncreaseRatio(firstYearValue, lastYearValue, years):
-    returnValue = (lastYearValue / firstYearValue) ** (1 / years) * 100 - 100
+    try:
+        returnValue = (lastYearValue / firstYearValue) ** (1 / years) * 100 - 100
+    except:
+        returnValue = 0
     return returnValue
