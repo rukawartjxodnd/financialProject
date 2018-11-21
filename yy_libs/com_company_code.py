@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-import psycopg2 as pg2
+# import psycopg2 as pg2
+# import config.dbConfig as dbConfig
+import config.db_connect as dbConnect
 
 def getCompanyCodes(kind = ''):
     url = "http://bigdata-trader.com/itemcodehelp.jsp"
@@ -28,7 +30,7 @@ def getCompanyCodes(kind = ''):
 def CodeDataToDB (codeLists):
 
     # DB Connect
-    connection = pg2.connect(host='localhost', dbname='postgres', user='postgres', password='1111')
+    connection = dbConnect.dataBaseConnect()
     cursor = connection.cursor()
 
     # table clear
@@ -54,7 +56,7 @@ def CodeDataToDB (codeLists):
 def dataToCode (kind = ''):
 
     # DB Connect
-    connection = pg2.connect(host='localhost', dbname='postgres', user='postgres', password='1111')
+    connection = dbConnect.dataBaseConnect()
     cursor = connection.cursor()
 
     # 리스트 조회
@@ -78,3 +80,6 @@ def dataToCode (kind = ''):
         resultCodes.append(returnValue)
 
     return resultCodes
+
+CodeDataToDB (getCompanyCodes())
+print(dataToCode ())
