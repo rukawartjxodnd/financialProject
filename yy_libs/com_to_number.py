@@ -2,6 +2,8 @@
 
 # 개별요소 변환
 def convertToNumber(str):
+    # 천자리 콤마 제거
+    str = str.replace(",", "")
 
     # 소숫점을 가지고 있으면 소수형 변환
     # 오류 발생시 0 반환

@@ -43,7 +43,7 @@ def CodeDataToDB (codeLists):
         try:
             cursor.execute(sql, (code['code'], code['code_name'][7:], code['sosok'],))
         except:
-            print("error: "+ code['code'], code['code_name'][7:], code['sosok'])
+            print("error(com_company_code.CodeDataToDB): "+ code['code'], code['code_name'][7:], code['sosok'])
         finally:
             cursor.execute('commit')
 
@@ -53,15 +53,15 @@ def CodeDataToDB (codeLists):
     connection.close
 
 
-def dataToCode (kind = ''):
+def getCompanyCodesFromDb (kind = ''):
 
     # DB Connect
     connection = dbConnect.dataBaseConnect()
     cursor = connection.cursor()
 
     # 리스트 조회
-    sql = "select code, name, kind from company_code where kind =  %s or '' = %s"
-    cursor.execute(sql, (kind, kind,))
+    sql = "select code, name, kind from company_code where kind like %s"
+    cursor.execute(sql, ("%"+kind+"%",))
     result = cursor.fetchall()
 
     # DB종료, DB연결 해제
@@ -80,6 +80,3 @@ def dataToCode (kind = ''):
         resultCodes.append(returnValue)
 
     return resultCodes
-
-CodeDataToDB (getCompanyCodes())
-print(dataToCode ())

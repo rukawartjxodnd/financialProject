@@ -30,6 +30,9 @@ def verifyPL(companyCode, printHuddle = 6):
 
     # PER
     per = toNum.toNumber(bsFactor['closingPer'])
+    # 결산기준 PER이 0이면 (데이타 없으면) 12m 기준 PER 사용
+    if per == 0:
+        per = toNum.toNumber(bsFactor['m12Per'])
 
     # 3년 평균 PER
     year3PerIn = [annFactor['per'][3], annFactor['per'][4], annFactor['per'][5]]
@@ -37,19 +40,21 @@ def verifyPL(companyCode, printHuddle = 6):
     year3AvePer = cal.getAvg(year3PerInNum,2)
 
     # 3년 매출액 성장률
-    year3RevenueIn = [annFactor['revenue'][2], annFactor['revenue'][5]]
+    year3RevenueIn = [annFactor['revenue'][2], annFactor['revenue'][3], annFactor['revenue'][4], annFactor['revenue'][5]]
     year3RevenueInNum = toNum.toNumber(year3RevenueIn)
-    year3IncreaseRatioRevenue = cal.cmpIntstIncreaseRatio(year3RevenueInNum[0], year3RevenueInNum[1], 3)
+    year3IncreaseRatioRevenue = cal.cmpIntstIncreaseRatio(year3RevenueInNum)['ratio']
 
     # 3년 재고자산 성장률
-    year3InventoryIn = [annFinFactor['inventory'][0], annFinFactor['inventory'][3]]
+    year3InventoryIn = [annFinFactor['inventory'][0], annFinFactor['inventory'][1], annFinFactor['inventory'][2], annFinFactor['inventory'][3]]
     year3InventoryInNum = toNum.toNumber(year3InventoryIn)
-    year3IncreaseRatioInventory = cal.cmpIntstIncreaseRatio(year3InventoryInNum[0], year3InventoryInNum[1], 3)
+    year3IncreaseRatioInventory = cal.cmpIntstIncreaseRatio(year3InventoryInNum)['ratio']
 
     # 5년간 순이익 증가율
-    year5IncomeIn = [annFactor['income'][0], annFactor['income'][5]]
+    year5IncomeIn = [annFactor['income'][0], annFactor['income'][1], annFactor['income'][2], annFactor['income'][3], annFactor['income'][4], annFactor['income'][5]]
     year5IncomeInNum = toNum.toNumber(year5IncomeIn)
-    year5IncreaseRatioIncome = cal.cmpIntstIncreaseRatio(year5IncomeInNum[0], year5IncomeInNum[1], 3)
+    year5IncreaseRatioIncomeDic = cal.cmpIntstIncreaseRatio(year5IncomeInNum)
+    year5IncreaseRatioIncomeRatio = year5IncreaseRatioIncomeDic['ratio']
+    year5IncreaseRatioIncomeFigure = year5IncreaseRatioIncomeDic['figure']
 
     # 영업이익률 (ratio of operating gain to revenue)
     roogtr = toNum.toNumber(annFactor['profitRatio'][5])
@@ -61,7 +66,7 @@ def verifyPL(companyCode, printHuddle = 6):
         interestCost = annIncomeFactor['interestCost'][index]
         if toNum.toNumber(opProfit) != 0 and toNum.toNumber(interestCost) != 0:
             break
-    # 배율 구하되 0으로 나누는 경우 0배로 처리 함
+    # 배율 구하되 0으로 나누는 경우 100배로 처리 함
     try:
         InrtCompMagni = toNum.toNumber(opProfit) / toNum.toNumber(interestCost)
     except(ZeroDivisionError):
@@ -95,10 +100,22 @@ def verifyPL(companyCode, printHuddle = 6):
         Yn3 = 'Y'
         meetNum = meetNum + 1
 
-    # 20% < 5년간 순이익 증가율 < 50%
-    if year5IncreaseRatioIncome > 20 and year5IncreaseRatioIncome < 50:
+    # 20% < 5년간 순이익 증가율 < 50%, 음수를 고려 한다.
+    year5IncreaseRatioIncome = ''
+    if year5IncreaseRatioIncomeFigure == '양수지속':
+        year5IncreaseRatioIncome = year5IncreaseRatioIncomeRatio
+        if year5IncreaseRatioIncome > 20 and year5IncreaseRatioIncome < 50:
+            Yn4 = 'Y'
+            meetNum = meetNum + 1
+    elif year5IncreaseRatioIncomeFigure == '양수전환':
+        year5IncreaseRatioIncome = year5IncreaseRatioIncomeFigure
         Yn4 = 'Y'
         meetNum = meetNum + 1
+    elif year5IncreaseRatioIncomeFigure == '음수전환':
+        year5IncreaseRatioIncome = year5IncreaseRatioIncomeFigure
+    elif year5IncreaseRatioIncomeFigure == '음수지속':
+        year5IncreaseRatioIncome = year5IncreaseRatioIncomeFigure
+
 
     # 영업이익률 > 10%
     if roogtr > 10:

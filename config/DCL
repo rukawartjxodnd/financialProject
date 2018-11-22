@@ -1,0 +1,30 @@
+CREATE TABLE company_code (
+    code        char(6) NOT NULL,
+    name       varchar(40),
+    kind        varchar(10),
+    last_update_day   date
+);
+
+CREATE TABLE stock_validation_Peter_Lynch (
+    validate_day varchar(8) primary KEY,
+    code        char(6) not null,
+    name       varchar(40),
+    per        numeric(20,10),
+    per_3avg   numeric(20,10),
+    revenue_3_increase numeric(20,10),
+    revenue_3_increase_ment varchar(40),
+    inventory_3_increase numeric(20,10),
+    inventory_3_increase_ment varchar(40),
+    income_5_increase numeric(20,10),
+    income_5_increase_ment varchar(40),
+    operation_margine numeric(20,10),
+    In_comp_magn numeric(20,10),
+    YN_per_3 char(1),
+    YN_revenue_3 char(1),
+    YN_revenue_inventory_3 char(1),
+    YN_revenue_income_5 char(1),
+    YN_operation_margine char(1),
+    YN_in_comp_magn char(1),
+    meet_number int,
+    last_update_day   timestamp
+);

@@ -4,7 +4,7 @@ import yy_libs.crawler_finance_detail_information as detailInfo
 def extractBasicFactor(compCode):
     inputObj = detailInfo.getDetailFinanceInfo(compCode)["basicInfoGroup"]
     companyCode = compCode
-    companyName = inputObj.find("h1").text
+    companyName = inputObj.find("h1").text.replace("\xa0", " ")
 
     values = inputObj.find("div", {"class": "corp_group2", "id": "corp_group2"}).find_all("dd")
     closingPer = values[1].text
