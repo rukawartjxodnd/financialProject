@@ -8,7 +8,7 @@ import datetime as dt
 
 # 대상 코드 추출
 codeList = inputCode.getCompanyCodes('KOS')[:30]
-codeList = inputCode.getCompanyCodesFromDb('KOSDAQ')[:30]
+codeList = inputCode.getCompanyCodesFromDb('KOSDAQ')[:3]
 
 #################################
 # 피터린치
@@ -65,19 +65,57 @@ def PeterLynchToDB(dataList, goalNun):
     cursor.execute('commit')
 
     # data별 DB insert
-    sql = "insert into stock_validation_Peter_Lynch(validate_day, code)values (%s, %s);"
-    cursor.execute(sql, (nowDt, '123456',))
-
+    sql = "insert into stock_validation_Peter_Lynch(" \
+          "validate_day," \
+          "code," \
+          "name," \
+          "per," \
+          "per_3avg," \
+          "revenue_3_increase," \
+          "inventory_3_increase," \
+          "income_5_increase," \
+          "operation_margine," \
+          "In_comp_magn," \
+          "YN_per_3," \
+          "YN_revenue_3," \
+          "YN_revenue_inventory_3," \
+          "YN_revenue_income_5," \
+          "YN_operation_margine," \
+          "YN_in_comp_magn," \
+          "meet_number," \
+          "last_update_day)" \
+          "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
     for companyData in dataList:
         try:
             # 뒤의 숫자는 만족하는 기준 갯수를 의미 함.
             resultDictionary = pl.verifyPL(companyData['code'], goalNun)
-            if resultDictionary["PrintYn"]:
 
-                cursor.execute(sql, (nowDt, '123456',))
-        except:
+            if resultDictionary["PrintYn"]:
+                validate_day = nowDt
+                code = resultDictionary['companyCode']
+                name = resultDictionary['companyName']
+                per = resultDictionary['per']
+                per_3avg = resultDictionary['year3AvePer']
+                revenue_3_increase = resultDictionary['year3IncreaseRatioRevenue']
+                inventory_3_increase = resultDictionary['year3IncreaseRatioInventory']
+                income_5_increase = resultDictionary['year5IncreaseRatioIncome']
+                operation_margine = resultDictionary['roogtr']
+                In_comp_magn = resultDictionary['InrtCompMagni']
+                YN_per_3 = resultDictionary['Yn1']
+                YN_revenue_3 = resultDictionary['Yn2']
+                YN_revenue_inventory_3 = resultDictionary['Yn3']
+                YN_revenue_income_5 = resultDictionary['Yn4']
+                YN_operation_margine = resultDictionary['Yn5']
+                YN_in_comp_magn = resultDictionary['Yn6']
+                meet_number = resultDictionary['meetNum']
+
+                cursor.execute(sql, (validate_day, code, per, per_3avg, revenue_3_increase, inventory_3_increase,
+                                     income_5_increase, operation_margine, In_comp_magn,
+                                     YN_per_3, YN_revenue_3, YN_revenue_inventory_3, YN_revenue_income_5,
+                                     YN_operation_margine, YN_in_comp_magn, meet_number,))
+        except NotImplementedError:
             print("error(stream_mento_obey.companyCode): ", companyData['code_name'])
         finally:
             cursor.execute('commit')
 
-PeterLynchToDB([], 0)
+PeterLynchToDB(codeList, 0)
