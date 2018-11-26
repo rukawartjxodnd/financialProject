@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 # import psycopg2 as pg2
 # import config.dbConfig as dbConfig
 import config.db_connect as dbConnect
+from datetime import datetime as dt
 
 def getCompanyCodes(kind = ''):
     url = "http://bigdata-trader.com/itemcodehelp.jsp"
@@ -38,10 +39,10 @@ def CodeDataToDB (codeLists):
     cursor.execute('commit')
 
     # codeLists별 DB insert
-    sql = "insert into company_code(code, name, kind, last_update_day)values (%s, %s, %s, current_date);"
+    sql = "insert into company_code(code, name, kind, last_update_day)values (%s, %s, %s, %s);"
     for code in codeLists:
         try:
-            cursor.execute(sql, (code['code'], code['code_name'][7:], code['sosok'],))
+            cursor.execute(sql, (code['code'], code['code_name'][7:], code['sosok'], dt.now(),))
         except:
             print("error(com_company_code.CodeDataToDB): "+ code['code'], code['code_name'][7:], code['sosok'])
         finally:

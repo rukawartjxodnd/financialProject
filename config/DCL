@@ -2,21 +2,21 @@ CREATE TABLE company_code (
     code        char(6) NOT NULL,
     name       varchar(40),
     kind        varchar(10),
-    last_update_day   date
+    last_update_day   timestamp
 );
 
 CREATE TABLE stock_validation_Peter_Lynch (
-    validate_day varchar(8) primary KEY,
+    validate_day varchar(8) not null,
     code        char(6) not null,
     name       varchar(40),
     per        numeric(20,10),
     per_3avg   numeric(20,10),
-    revenue_3_increase numeric(20,10),
     revenue_3_increase_ment varchar(40),
-    inventory_3_increase numeric(20,10),
+    revenue_3_increase numeric(20,10),
     inventory_3_increase_ment varchar(40),
-    income_5_increase numeric(20,10),
+    inventory_3_increase numeric(20,10),
     income_5_increase_ment varchar(40),
+    income_5_increase numeric(20,10),
     operation_margine numeric(20,10),
     In_comp_magn numeric(20,10),
     YN_per_3 char(1),

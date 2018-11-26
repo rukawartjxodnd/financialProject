@@ -42,19 +42,20 @@ def verifyPL(companyCode, printHuddle = 6):
     # 3년 매출액 성장률
     year3RevenueIn = [annFactor['revenue'][2], annFactor['revenue'][3], annFactor['revenue'][4], annFactor['revenue'][5]]
     year3RevenueInNum = toNum.toNumber(year3RevenueIn)
-    year3IncreaseRatioRevenue = cal.cmpIntstIncreaseRatio(year3RevenueInNum)['ratio']
+    year3IncreaseRatioRevenueRatio = cal.cmpIntstIncreaseRatio(year3RevenueInNum)['ratio']
+    year3IncreaseRatioRevenueFigure = cal.cmpIntstIncreaseRatio(year3RevenueInNum)['figure']
 
     # 3년 재고자산 성장률
     year3InventoryIn = [annFinFactor['inventory'][0], annFinFactor['inventory'][1], annFinFactor['inventory'][2], annFinFactor['inventory'][3]]
     year3InventoryInNum = toNum.toNumber(year3InventoryIn)
-    year3IncreaseRatioInventory = cal.cmpIntstIncreaseRatio(year3InventoryInNum)['ratio']
+    year3IncreaseRatioInventoryRatio = cal.cmpIntstIncreaseRatio(year3InventoryInNum)['ratio']
+    year3IncreaseRatioInventoryFigure = cal.cmpIntstIncreaseRatio(year3RevenueInNum)['figure']
 
     # 5년간 순이익 증가율
     year5IncomeIn = [annFactor['income'][0], annFactor['income'][1], annFactor['income'][2], annFactor['income'][3], annFactor['income'][4], annFactor['income'][5]]
     year5IncomeInNum = toNum.toNumber(year5IncomeIn)
-    year5IncreaseRatioIncomeDic = cal.cmpIntstIncreaseRatio(year5IncomeInNum)
-    year5IncreaseRatioIncomeRatio = year5IncreaseRatioIncomeDic['ratio']
-    year5IncreaseRatioIncomeFigure = year5IncreaseRatioIncomeDic['figure']
+    year5IncreaseRatioIncomeRatio = cal.cmpIntstIncreaseRatio(year5IncomeInNum)['ratio']
+    year5IncreaseRatioIncomeFigure = cal.cmpIntstIncreaseRatio(year5IncomeInNum)['figure']
 
     # 영업이익률 (ratio of operating gain to revenue)
     roogtr = toNum.toNumber(annFactor['profitRatio'][5])
@@ -66,11 +67,16 @@ def verifyPL(companyCode, printHuddle = 6):
         interestCost = annIncomeFactor['interestCost'][index]
         if toNum.toNumber(opProfit) != 0 and toNum.toNumber(interestCost) != 0:
             break
+
+    # 분자가 0보다 작으면 0 처리
     # 배율 구하되 0으로 나누는 경우 100배로 처리 함
-    try:
-        InrtCompMagni = toNum.toNumber(opProfit) / toNum.toNumber(interestCost)
-    except(ZeroDivisionError):
-        InrtCompMagni = 100
+    if toNum.toNumber(opProfit) <= 0:
+        InrtCompMagni = 0
+    else:
+        try:
+            InrtCompMagni = toNum.toNumber(opProfit) / toNum.toNumber(interestCost)
+        except ZeroDivisionError:
+            InrtCompMagni = 100
 
 
     #################################
@@ -91,14 +97,16 @@ def verifyPL(companyCode, printHuddle = 6):
         meetNum = meetNum + 1
 
     # 3년간 매출액 성장률 > 10%
-    if year3IncreaseRatioRevenue > 10:
-        Yn2 = 'Y'
-        meetNum = meetNum + 1
+    if year3IncreaseRatioRevenueFigure == '양수지속':
+        if year3IncreaseRatioRevenueRatio > 10:
+            Yn2 = 'Y'
+            meetNum = meetNum + 1
 
     # 3년간 매출액 성장률 > 3년간 재고자산 성장률
-    if year3IncreaseRatioRevenue > year3IncreaseRatioInventory:
-        Yn3 = 'Y'
-        meetNum = meetNum + 1
+    if year3IncreaseRatioRevenueFigure == '양수지속' and year3IncreaseRatioInventoryFigure == '양수지속':
+        if year3IncreaseRatioRevenueRatio > year3IncreaseRatioInventoryRatio:
+            Yn3 = 'Y'
+            meetNum = meetNum + 1
 
     # 20% < 5년간 순이익 증가율 < 50%, 음수를 고려 한다.
     year5IncreaseRatioIncome = ''
@@ -107,14 +115,6 @@ def verifyPL(companyCode, printHuddle = 6):
         if year5IncreaseRatioIncome > 20 and year5IncreaseRatioIncome < 50:
             Yn4 = 'Y'
             meetNum = meetNum + 1
-    elif year5IncreaseRatioIncomeFigure == '양수전환':
-        year5IncreaseRatioIncome = year5IncreaseRatioIncomeFigure
-        Yn4 = 'Y'
-        meetNum = meetNum + 1
-    elif year5IncreaseRatioIncomeFigure == '음수전환':
-        year5IncreaseRatioIncome = year5IncreaseRatioIncomeFigure
-    elif year5IncreaseRatioIncomeFigure == '음수지속':
-        year5IncreaseRatioIncome = year5IncreaseRatioIncomeFigure
 
 
     # 영업이익률 > 10%
@@ -135,7 +135,12 @@ def verifyPL(companyCode, printHuddle = 6):
     #################################
     return {"companyCode": companyCode, "companyName": companyName,
             "per": per, "year3AvePer": year3AvePer,
-            "year3IncreaseRatioRevenue": year3IncreaseRatioRevenue, "year3IncreaseRatioInventory": year3IncreaseRatioInventory,
-            "year5IncreaseRatioIncome": year5IncreaseRatioIncome, "roogtr": roogtr, "InrtCompMagni": InrtCompMagni,
-            "Yn1": Yn1, "Yn2": Yn2, "Yn3": Yn3, "Yn4": Yn4, "Yn5": Yn5, "Yn6": Yn6,"meetNum": meetNum,
-            "PrintYn": PrintYn}
+            "year3IncreaseRatioRevenueFigure": year3IncreaseRatioRevenueFigure,
+            "year3IncreaseRatioRevenueRatio": year3IncreaseRatioRevenueRatio,
+            "year3IncreaseRatioInventoryFigure": year3IncreaseRatioInventoryFigure,
+            "year3IncreaseRatioInventoryRatio": year3IncreaseRatioInventoryRatio,
+            "year5IncreaseRatioIncomeFigure": year5IncreaseRatioIncomeFigure,
+            "year5IncreaseRatioIncomeRatio": year5IncreaseRatioIncomeRatio,
+            "roogtr": roogtr, "InrtCompMagni": InrtCompMagni,
+            "Yn1": Yn1, "Yn2": Yn2, "Yn3": Yn3, "Yn4": Yn4, "Yn5": Yn5, "Yn6": Yn6,
+            "meetNum": meetNum, "PrintYn": PrintYn}
