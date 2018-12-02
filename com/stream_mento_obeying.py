@@ -8,7 +8,7 @@ from datetime import datetime as dt
 
 # 대상 코드 추출
 codeList = inputCode.getCompanyCodes('KOS')[:30]
-codeList = inputCode.getCompanyCodesFromDb('KOS')[:10]
+codeList = inputCode.getCompanyCodesFromDb('KOS')[:]
 
 #################################
 # 피터린치
@@ -138,4 +138,4 @@ def PeterLynchToDB(dataList, goalNun):
         finally:
             cursor.execute('commit')
 
-PeterLynchToDB(codeList, 0)
+PeterLynchToFile(codeList, 0)

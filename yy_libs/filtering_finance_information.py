@@ -13,7 +13,7 @@ def filteringData(sosok, financeInfoList):
         roe = financeInfo["roe"]
 
         # 조건설정
-        if int(totalValue) > 700:
+        if int(totalValue) < 0:
             continue
         if per == "N/A" or roe == "N/A":
             continue
